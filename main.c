@@ -93,36 +93,36 @@ void main_initthr(void *unused)
 
 int main(void)
 {
-	char s[128];
+// 	char s[128];
 
-	_hal_init();
-	_log_init();
+// 	_hal_init();
+// 	_log_init();
 
-	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");
-	lib_printf("hal: %s\n", hal_cpuInfo(s));
-	lib_printf("hal: %s\n", hal_cpuFeatures(s, sizeof(s)));
-	lib_printf("hal: %s\n", hal_interruptsFeatures(s, sizeof(s)));
-	syspage_init();
+// 	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");
+// 	lib_printf("hal: %s\n", hal_cpuInfo(s));
+// 	lib_printf("hal: %s\n", hal_cpuFeatures(s, sizeof(s)));
+// 	lib_printf("hal: %s\n", hal_interruptsFeatures(s, sizeof(s)));
+// 	syspage_init();
 
-	_vm_init(&main_common.kmap, &main_common.kernel);
-	_proc_init(&main_common.kmap, &main_common.kernel);
-	_syscalls_init();
+// 	_vm_init(&main_common.kmap, &main_common.kernel);
+// 	_proc_init(&main_common.kmap, &main_common.kernel);
+// 	_syscalls_init();
 
-#if 0
-	/* Start tests */
-	test_proc_threads1();
-	test_vm_kmallocsim();
-	test_proc_conditional();
-	test_vm_alloc();
-	test_vm_kmalloc();
-	test_proc_exit();
-#endif
+// #if 0
+// 	/* Start tests */
+// 	test_proc_threads1();
+// 	test_vm_kmallocsim();
+// 	test_proc_conditional();
+// 	test_vm_alloc();
+// 	test_vm_kmalloc();
+// 	test_proc_exit();
+// #endif
 
-	proc_start(main_initthr, NULL, (const char *)"init");
+// 	proc_start(main_initthr, NULL, (const char *)"init");
 
-	/* Start scheduling, leave current stack */
-	hal_cpuEnableInterrupts();
-	hal_cpuReschedule(NULL, NULL);
+// 	/* Start scheduling, leave current stack */
+// 	hal_cpuEnableInterrupts();
+// 	hal_cpuReschedule(NULL, NULL);
 
 	return 0;
 }

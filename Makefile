@@ -42,6 +42,9 @@ OBJS = $(addprefix $(PREFIX_O), main.o syscalls.o syspage.o)
 
 all: $(PREFIX_PROG_STRIPPED)phoenix-$(TARGET_FAMILY)-$(TARGET_SUBFAMILY).elf
 
+# warning('-----')
+$(info ************  TEST VERSION ************ $(TARGET_SUFF))
+# warning($(TARGET_SUFF))
 include hal/$(TARGET_SUFF)/Makefile
 include vm/Makefile
 include proc/Makefile

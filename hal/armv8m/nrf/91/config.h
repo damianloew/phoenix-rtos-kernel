@@ -18,11 +18,11 @@
 
 
 #ifndef __ASSEMBLY__
-#include "nrf.h"
-#include "stm32-timer.h"
-#include "../../include/arch/syspage-stm32.h"
+#include "nrf91.h"
+// #include "stm32-timer.h"
+#include "../../include/arch/syspage-nrf91.h"
 
-#define HAL_NAME_PLATFORM "STM32 "
+#define HAL_NAME_PLATFORM "NRF91 "
 #endif
 
 #endif
