@@ -21,6 +21,7 @@ MAKEFLAGS += --no-print-directory
 #TARGET ?= armv7m7-imxrt117x
 #TARGET ?= armv7a7-imx6ull
 TARGET ?= ia32-generic
+TARGET ?= armv8m33-nrf9160
 #TARGET ?= riscv64-spike
 
 include ../phoenix-rtos-build/Makefile.common

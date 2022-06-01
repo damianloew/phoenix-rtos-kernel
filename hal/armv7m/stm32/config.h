@@ -18,7 +18,6 @@
 
 
 #ifndef __ASSEMBLY__
-#include "nrf.h"
 #include "stm32-timer.h"
 #include "../../include/arch/syspage-stm32.h"
 

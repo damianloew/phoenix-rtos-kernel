@@ -68,62 +68,81 @@ void hal_consolePrint(int attr, const char *s)
 }
 
 
-void console_init(void)
+/* Init pins according to nrf9160 product specification */
+static void console_configPins(void)
 {
-	struct {
-		void *base;
-	} uarts[] = {
-		{ (void *)UART0_BASE },
-		{ (void *)UART1_BASE },
-		{ (void *)UART2_BASE },
-		{ (void *)UART3_BASE }
-	};
+	_nrf91_gpioConfig(UART0_TX, output, nopull);
+	_nrf91_gpioConfig(UART0_RX, input, nopull);
+	_nrf91_gpioConfig(UART0_RTS, output, nopull);
+	_nrf91_gpioConfig(UART0_CTS, input, pulldown);
 
-	/* default uart instance for nrf9160 dk, connected to VCOM0 */
-	const u8 uart = 0, txpin = 29, rxpin = 28, rtspin = 27, ctspin = 26, led1pin = 2, led2pin = 3; 
-	unsigned int reg = 6, errsrc = 0;
+	_nrf91_gpioSet(UART0_TX, high);
+	_nrf91_gpioSet(UART0_RTS, high);
+}
 
-	halconsole_common.base = uarts[uart].base;
 
-	/* Init pins according to nrf9160 product specification */
-	_nrf91_gpioConfig(txpin, output, nopull);
-	_nrf91_gpioConfig(rxpin, input, nopull);
-	_nrf91_gpioConfig(rtspin, output, nopull);
-	_nrf91_gpioConfig(ctspin, input, pulldown);
+/* UART0 supported for the hal console */
+void _hal_consoleInit(void)
+{
+	halconsole_common.base = UART0_BASE;
+	// halconsole_common.base = UART1_BASE;
+	console_configPins();
 
-	_nrf91_gpioSet(txpin, high);
-	_nrf91_gpioSet(rtspin, high);
+	/* disable uarte instance */
+	*(halconsole_common.base + uarte_enable) = 0u;
+	hal_cpuDataMemoryBarrier();
 
 	/* Select pins */
-	*(halconsole_common.base + uarte_psel_txd) = txpin;
-	*(halconsole_common.base + uarte_psel_rxd) = rxpin;
-	*(halconsole_common.base + uarte_psel_rts) = rtspin;
-	*(halconsole_common.base + uarte_psel_cts) = ctspin;
+	*(halconsole_common.base + uarte_psel_txd) = UART0_TX;
+	*(halconsole_common.base + uarte_psel_rxd) = UART0_RX;
+	*(halconsole_common.base + uarte_psel_rts) = UART0_RTS;
+	*(halconsole_common.base + uarte_psel_cts) = UART0_CTS;
+	// /* Select pins */
+	// *(halconsole_common.base + uarte_psel_txd) = UART1_TX;
+	// *(halconsole_common.base + uarte_psel_rxd) = UART1_RX;
+	// *(halconsole_common.base + uarte_psel_rts) = UART1_RTS;
+	// *(halconsole_common.base + uarte_psel_cts) = UART1_CTS;
 
-	/* Set baud rate to 9600, TODO: verify why uart with 115200 br doesn't work properly */
-	*(halconsole_common.base + uarte_baudrate) = baud_9600;
+	switch (UART_BAUDRATE) {
+		case 9600:
+			*(halconsole_common.base + uarte_baudrate) = baud_9600;
+			break;
+		case 115200:
+		default:
+			*(halconsole_common.base + uarte_baudrate) = baud_115200;
+	}
 
 	/* Default settings - hardware flow control disabled, exclude parity bit, one stop bit */
 	*(halconsole_common.base + uarte_config) = 0u;
 
-	/* Set default max number of bytes in specific buffers to 4095 */
-	*(halconsole_common.base + uarte_txd_maxcnt) = 0xFFF;
-	*(halconsole_common.base + uarte_rxd_maxcnt) = 0xFFF;
+	/* Set default max number of bytes in specific buffers */
+	*(halconsole_common.base + uarte_txd_maxcnt) = UART_TX_DMA_SIZE;
+	*(halconsole_common.base + uarte_rxd_maxcnt) = UART_RX_DMA_SIZE;
 
-	/* Set default uart sources: ram0 and ram1 start addresses */
-	*(halconsole_common.base + uarte_txd_ptr) = 0x20000000;
-	*(halconsole_common.base + uarte_txd_ptr) = 0x20008000;
+	/* Set default memory regions for uart dma */
+	*(halconsole_common.base + uarte_txd_ptr) = UART0_TX_DMA;
+	*(halconsole_common.base + uarte_rxd_ptr) = UART0_RX_DMA;
+	// *(halconsole_common.base + uarte_txd_ptr) = UART1_TX_DMA;
+	// *(halconsole_common.base + uarte_rxd_ptr) = UART1_RX_DMA;
 
 	/* disable all uart interrupts */
 	*(halconsole_common.base + uarte_intenclr) = 0xFFFFFFFF;
+	hal_cpuDataMemoryBarrier();
 
+	/* enable uarte instance */
 	*(halconsole_common.base + uarte_enable) = 0x8;
+	hal_cpuDataMemoryBarrier();
 
-	/* Wait for cts activation - assuming that it should be active all the time */
-	while ( *(halconsole_common.base + uarte_events_cts) != 1u )
-		;
-	*(halconsole_common.base + uarte_events_cts) = 0u;
+	volatile char *txbuff = (volatile char *)UART0_TX_DMA;
+
+	for (int i = 0; i < 9; i++) {
+		txbuff[i] = 'A';
+	}
+	txbuff[9] = '\0';
+
+	*(halconsole_common.base + uarte_starttx) = 1u;
 }
+
 
 
 

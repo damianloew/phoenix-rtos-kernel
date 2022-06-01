@@ -95,7 +95,7 @@ int main(void)
 {
 // 	char s[128];
 
-// 	_hal_init();
+	_hal_init();
 // 	_log_init();
 
 // 	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");

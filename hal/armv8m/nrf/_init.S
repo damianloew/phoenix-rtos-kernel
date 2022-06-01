@@ -20,7 +20,7 @@
 #define ADDR_SCB 0xe000ed00
 
 .syntax unified
-.cpu cortex-m3
+.cpu cortex-m33
 
 
 .extern _cpu_nctx
@@ -41,7 +41,7 @@ _init_vectors:
 .word _exceptions_dispatch /* MemMgtFault */
 .word _exceptions_dispatch /* BusFault */
 .word _exceptions_dispatch /* UsageFault */
-.word 0
+.word _exceptions_dispatch /* SecureFault */
 .word 0
 .word 0
 .word 0
