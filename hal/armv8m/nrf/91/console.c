@@ -116,7 +116,7 @@ void _hal_consoleInit(void)
 	*(halconsole_common.base + uarte_config) = 0u;
 
 	/* Set default max number of bytes in specific buffers */
-	*(halconsole_common.base + uarte_txd_maxcnt) = UART_TX_DMA_SIZE;
+	*(halconsole_common.base + uarte_txd_maxcnt) = 9; //UART_TX_DMA_SIZE; TODO: temp
 	*(halconsole_common.base + uarte_rxd_maxcnt) = UART_RX_DMA_SIZE;
 
 	/* Set default memory regions for uart dma */
@@ -141,6 +141,8 @@ void _hal_consoleInit(void)
 	txbuff[9] = '\0';
 
 	*(halconsole_common.base + uarte_starttx) = 1u;
+
+	while(1) {;}
 }
 
 
