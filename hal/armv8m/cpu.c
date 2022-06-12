@@ -163,10 +163,8 @@ char *hal_cpuInfo(char *info)
 	int i;
 	unsigned int cpuinfo;
 
-#ifdef CPU_STM32
-	cpuinfo = _stm32_cpuid();
-#elif defined(CPU_IMXRT)
-	cpuinfo = _imxrt_cpuid();
+#ifdef CPU_NRF91
+	cpuinfo = _nrf91_cpuid();
 #else
 	hal_strcpy(info, "unknown");
 	return info;

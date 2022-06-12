@@ -93,19 +93,17 @@ void main_initthr(void *unused)
 
 int main(void)
 {
-// 	char s[128];
+	char s[128];
 
 	_hal_init();
-	hal_consolePrint(0, "Hello from nrf9160 kernel!");
-	while(1) {;}
-// 	_log_init();
+	_log_init();
 
-// 	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");
-// 	lib_printf("hal: %s\n", hal_cpuInfo(s));
-// 	lib_printf("hal: %s\n", hal_cpuFeatures(s, sizeof(s)));
-// 	lib_printf("hal: %s\n", hal_interruptsFeatures(s, sizeof(s)));
+	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");
+	lib_printf("hal: %s\n", hal_cpuInfo(s));
+	lib_printf("hal: %s\n", hal_cpuFeatures(s, sizeof(s)));
+	lib_printf("hal: %s\n", hal_interruptsFeatures(s, sizeof(s)));
 // 	syspage_init();
-
+	while(1) {;}
 // 	_vm_init(&main_common.kmap, &main_common.kernel);
 // 	_proc_init(&main_common.kmap, &main_common.kernel);
 // 	_syscalls_init();

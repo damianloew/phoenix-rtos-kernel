@@ -13,16 +13,12 @@
  * %LICENSE%
  */
 
-#ifndef _HAL_ARMV7M_CPU_H_
-#define _HAL_ARMV7M_CPU_H_
+#ifndef _HAL_ARMV8M_CPU_H_
+#define _HAL_ARMV8M_CPU_H_
 
 
-#if defined(CPU_STM32L152XD) || defined(CPU_STM32L152XE) || defined(CPU_STM32L4X6)
-#define CPU_STM32
-#endif
-
-#if defined(CPU_IMXRT105X) || defined(CPU_IMXRT106X) || defined(CPU_IMXRT117X)
-#define CPU_IMXRT
+#if defined(CPU_NRF9160)
+#define CPU_NRF91
 #endif
 
 #include "types.h"
@@ -37,19 +33,11 @@
 #define SIZE_KSTACK (4 * SIZE_PAGE)
 #endif
 
-#ifdef CPU_IMXRT
-#define RET_HANDLER_MSP 0xffffffe1
-#define RET_THREAD_MSP  0xffffffe9
-#define RET_THREAD_PSP  0xffffffed
-#define HWCTXSIZE       (8 + 18)
-#define USERCONTROL     0x7
-#else
 #define RET_HANDLER_MSP 0xfffffff1
 #define RET_THREAD_MSP  0xfffffff9
 #define RET_THREAD_PSP  0xfffffffd
 #define HWCTXSIZE       8
 #define USERCONTROL     0x3
-#endif
 
 #ifndef __ASSEMBLY__
 

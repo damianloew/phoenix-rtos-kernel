@@ -911,6 +911,7 @@ int hal_platformctl(void *ptr)
 #include "nrf91.h"
 
 static struct {
+	volatile u32 *scb;
 	volatile u32 *nvic;
 	// volatile u32 *rcc;
 	volatile u32 *power;
@@ -958,6 +959,9 @@ enum { timer_tasks_start = 0, timer_tasks_stop, timer_tasks_count, timer_tasks_c
 	timer_events_compare0 = 80, timer_events_compare1, timer_events_compare2, timer_events_compare3, timer_events_compare4, timer_events_compare5,
 	timer_intenset = 193, timer_intenclr, timer_mode = 321, timer_bitmode, timer_prescaler = 324,
 	timer_cc0 = 336, timer_cc1, timer_cc2, timer_cc3, timer_cc4, timer_cc5 };
+
+enum { scb_actlr = 2, scb_cpuid = 832, scb_icsr, scb_vtor, scb_aircr, scb_scr, scb_ccr, scb_shp1, scb_shp2,
+	scb_shp3, scb_shcsr, scb_cfsr, scb_mmsr, scb_bfsr, scb_ufsr, scb_hfsr, scb_mmar, scb_bfar, scb_afsr };
 
 // enum { pwr_cr1 = 0, pwr_cr2, pwr_cr3, pwr_cr4, pwr_sr1, pwr_sr2, pwr_scr, pwr_pucra, pwr_pdcra, pwr_pucrb,
 // 	pwr_pdcrb, pwr_pucrc, pwr_pdcrc, pwr_pucrd, pwr_pdcrd, pwr_pucre, pwr_pdcre, pwr_pucrf, pwr_pdcrf,
@@ -1371,6 +1375,11 @@ void _nrf91_nvicSetPriority(s8 irqn, u32 priority)
 }
 
 
+unsigned int _nrf91_cpuid(void)
+{
+	return *(nrf91_common.scb + scb_cpuid);
+}
+
 // int _stm32_gpioSetPort(unsigned int d, u16 val)
 // {
 // 	volatile u32 *base;
@@ -1438,6 +1447,7 @@ void _nrf91_init(void)
 	// stm32_common.rtc = (void *)0x40002800;
 	// stm32_common.syscfg = (void *)0x40010000;
 	// stm32_common.iwdg = (void *)0x40003000;
+	nrf91_common.scb = (void *)0xe000e000; //verified that it's same
 	nrf91_common.nvic = (void *)0xe000e100;
 	nrf91_common.power = (void *)0x50005000;
 	nrf91_common.clock = (void *)0x50005000;

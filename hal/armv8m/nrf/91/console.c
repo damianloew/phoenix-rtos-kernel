@@ -271,6 +271,20 @@ void _hal_consoleInit(void)
 
 void hal_consolePutch(char c)
 {
+	volatile char *tx_dma_buff = (volatile char *)UART0_TX_DMA;
+
+	tx_dma_buff[0] = c;
+
+	*(halconsole_common.base + uarte_txd_ptr) = UART0_TX_DMA;
+	*(halconsole_common.base + uarte_txd_maxcnt) = 1u;
+	*(halconsole_common.base + uarte_starttx) = 1u;
+	while ( *(halconsole_common.base + uarte_events_txstarted) != 1u )
+		;
+	*(halconsole_common.base + uarte_events_txstarted) = 0u;
+
+	while ( *(halconsole_common.base + uarte_events_endtx) != 1u )
+		;
+	*(halconsole_common.base + uarte_events_endtx) = 0u;
 	// while (~(*(console_common.base + isr)) & 0x80)
 	// 	;
 
