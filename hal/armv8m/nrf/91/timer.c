@@ -19,6 +19,8 @@
 #include "../../../interrupts.h"
 #include "../../../spinlock.h"
 
+#define TIMER0_IRQ timer0
+
 /*
  * Prescaler settings (32768 Hz input frequency):
  * 0 - 1/1
@@ -68,28 +70,39 @@ static u32 timer_getCnt(void)
 
 static int timer_irqHandler(unsigned int n, cpu_context_t *ctx, void *arg)
 {
-	// (void)n;
-	// (void)ctx;
-	// (void)arg;
-	// int ret = 0;
+	//from plo:
+	// (void)irq;
+	// (void)data;
 
-	// if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
-	// 	++timer_common.upper;
-	// 	*(timer_common.lptim + lptim_icr) = 2;
-	// }
+	_nrf91_timerClearEvent();
+	// timer_common.time += 1;
+	// hal_cpuDataSyncBarrier();
+	// return 0;
 
-	// if (*(timer_common.lptim + lptim_isr) & 1) {
-	// 	*(timer_common.lptim + lptim_icr) = 1;
 
-	// 	if (timer_common.wakeup != 0) {
-	// 		ret = 1;
-	// 		timer_common.wakeup = 0;
-	// 	}
-	// }
 
-	// hal_cpuDataMemoryBarrier();
+	(void)n;
+	(void)ctx;
+	(void)arg;
+	int ret = 0;
 
-	// return ret;
+	if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
+		++timer_common.upper;
+		*(timer_common.lptim + lptim_icr) = 2;
+	}
+
+	if (*(timer_common.lptim + lptim_isr) & 1) {
+		*(timer_common.lptim + lptim_icr) = 1;
+
+		if (timer_common.wakeup != 0) {
+			ret = 1;
+			timer_common.wakeup = 0;
+		}
+	}
+
+	hal_cpuDataMemoryBarrier();
+
+	return ret;
 }
 
 
@@ -186,6 +199,12 @@ int hal_timerRegister(int (*f)(unsigned int, cpu_context_t *, void *), void *dat
 
 void _hal_timerInit(u32 interval)
 {
+	timer_common.upper = 0;
+	timer_common.wakeup = 0;
+	//seems ok
+	hal_interruptsSetHandler(&timer_common.overflowh);
+	_nrf91_timerInit(interval);
+
 	// timer_common.lptim = (void *)0x40007c00;
 	// timer_common.upper = 0;
 	// timer_common.wakeup = 0;

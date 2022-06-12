@@ -13,12 +13,12 @@
  * %LICENSE%
  */
 
-// #include "../stm32.h"
+#include "nrf91.h"
 // #include "../stm32-timer.h"
 
-// #include "../../../cpu.h"
-// #include "../../armv7m.h"
-// #include "../../../../include/errno.h"
+#include "../../../cpu.h"
+#include "../../armv8m.h"
+#include "../../../../include/errno.h"
 
 
 // struct {
@@ -1353,6 +1353,11 @@ void _nrf91_nvicSetIRQ(s8 irqn, u8 state)
 
 	// hal_cpuDataSyncBarrier();
 	// hal_cpuInstrBarrier();
+	volatile u32 *ptr = nrf91_common.nvic + ((u8)irqn >> 5) + (state ? nvic_iser : nvic_icer);
+	*ptr = 1 << (irqn & 0x1F);
+
+	hal_cpuDataSyncBarrier();
+	hal_cpuInstrBarrier();
 }
 
 
@@ -1433,6 +1438,7 @@ void _nrf91_init(void)
 	// stm32_common.rtc = (void *)0x40002800;
 	// stm32_common.syscfg = (void *)0x40010000;
 	// stm32_common.iwdg = (void *)0x40003000;
+	nrf91_common.nvic = (void *)0xe000e100;
 	nrf91_common.power = (void *)0x50005000;
 	nrf91_common.clock = (void *)0x50005000;
 	nrf91_common.gpio = (void *)0x50842500;

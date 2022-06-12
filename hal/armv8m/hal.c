@@ -51,12 +51,12 @@ void _hal_start(void)
 
 void _hal_init(void)
 {
-	// _hal_spinlockInit();
-	// _hal_exceptionsInit();
-	// _hal_interruptsInit();
-	// _hal_cpuInit();
+	_hal_spinlockInit();
+	_hal_exceptionsInit();
+	_hal_interruptsInit();
+	_hal_cpuInit();
 	_hal_consoleInit();
-	// _hal_timerInit(SYSTICK_INTERVAL);
+	_hal_timerInit(SYSTICK_INTERVAL);
 
 	hal_common.started = 0;
 

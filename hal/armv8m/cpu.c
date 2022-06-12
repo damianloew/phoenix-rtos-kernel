@@ -176,20 +176,12 @@ char *hal_cpuInfo(char *info)
 	i = sizeof(HAL_NAME_PLATFORM) - 1;
 
 	if (((cpuinfo >> 24) & 0xff) == 0x41) {
-		hal_strcpy(info + i, "ARMv7 ");
+		hal_strcpy(info + i, "ARMv8 ");
 		i += 6;
 	}
 
 	if (((cpuinfo >> 4) & 0xfff) == 0xc23) {
-		hal_strcpy(info + i, "Cortex-M3 ");
-		i += 10;
-	}
-	else if (((cpuinfo >> 4) & 0xfff) == 0xc24) {
-		hal_strcpy(info + i, "Cortex-M4 ");
-		i += 10;
-	}
-	else if (((cpuinfo >> 4) & 0xfff) == 0xc27) {
-		hal_strcpy(info + i, "Cortex-M7 ");
+		hal_strcpy(info + i, "Cortex-M33 ");
 		i += 10;
 	}
 

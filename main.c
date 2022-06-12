@@ -96,6 +96,8 @@ int main(void)
 // 	char s[128];
 
 	_hal_init();
+	hal_consolePrint(0, "Hello from nrf9160 kernel!");
+	while(1) {;}
 // 	_log_init();
 
 // 	hal_consolePrint(ATTR_BOLD, "Phoenix-RTOS microkernel v. " VERSION "\n");
