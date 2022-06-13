@@ -47,7 +47,7 @@ enum { baud_9600 = 0x00275000, baud_115200 = 0x01D60000 };
 
 
 /* Maximum number of characters that will be sent is specifed by UART_TX_DMA_SIZE */
-void hal_consolePrint(int attr, const char *s)
+void _hal_consolePrint(const char *s)
 {
 	volatile char *tx_dma_buff = (volatile char *)UART0_TX_DMA;
 	int cnt = 0;
@@ -257,16 +257,16 @@ void _hal_consoleInit(void)
 // }
 
 
-// void hal_consolePrint(int attr, const char *s)
-// {
-// 	if (attr == ATTR_BOLD)
-// 		_hal_consolePrint(CONSOLE_BOLD);
-// 	else if (attr != ATTR_USER)
-// 		_hal_consolePrint(CONSOLE_CYAN);
+void hal_consolePrint(int attr, const char *s)
+{
+	if (attr == ATTR_BOLD)
+		_hal_consolePrint(CONSOLE_BOLD);
+	else if (attr != ATTR_USER)
+		_hal_consolePrint(CONSOLE_CYAN);
 
-// 	_hal_consolePrint(s);
-// 	_hal_consolePrint(CONSOLE_NORMAL);
-// }
+	_hal_consolePrint(s);
+	_hal_consolePrint(CONSOLE_NORMAL);
+}
 
 
 void hal_consolePutch(char c)

@@ -102,27 +102,26 @@ int main(void)
 	lib_printf("hal: %s\n", hal_cpuInfo(s));
 	lib_printf("hal: %s\n", hal_cpuFeatures(s, sizeof(s)));
 	lib_printf("hal: %s\n", hal_interruptsFeatures(s, sizeof(s)));
-// 	syspage_init();
+	syspage_init();
+	_vm_init(&main_common.kmap, &main_common.kernel);
+	_proc_init(&main_common.kmap, &main_common.kernel);
+	_syscalls_init();
+#if 0
+	/* Start tests */
+	test_proc_threads1();
+	test_vm_kmallocsim();
+	test_proc_conditional();
+	test_vm_alloc();
+	test_vm_kmalloc();
+	test_proc_exit();
+#endif
+
+	proc_start(main_initthr, NULL, (const char *)"init");
+
+	/* Start scheduling, leave current stack */
+	hal_cpuEnableInterrupts();
+	hal_cpuReschedule(NULL, NULL);
 	while(1) {;}
-// 	_vm_init(&main_common.kmap, &main_common.kernel);
-// 	_proc_init(&main_common.kmap, &main_common.kernel);
-// 	_syscalls_init();
-
-// #if 0
-// 	/* Start tests */
-// 	test_proc_threads1();
-// 	test_vm_kmallocsim();
-// 	test_proc_conditional();
-// 	test_vm_alloc();
-// 	test_vm_kmalloc();
-// 	test_proc_exit();
-// #endif
-
-// 	proc_start(main_initthr, NULL, (const char *)"init");
-
-// 	/* Start scheduling, leave current stack */
-// 	hal_cpuEnableInterrupts();
-// 	hal_cpuReschedule(NULL, NULL);
 
 	return 0;
 }

@@ -500,16 +500,6 @@ int hal_platformctl(void *ptr)
 // }
 
 
-// void _stm32_nvicSystemReset(void)
-// {
-// 	*(stm32_common.scb + scb_aircr) = ((0x5fa << 16) | (*(stm32_common.scb + scb_aircr) & (0x700)) | (1 << 0x02));
-
-// 	__asm__ volatile ("dsb");
-
-// 	for(;;);
-// }
-
-
 // /* EXTI */
 
 
@@ -1347,6 +1337,19 @@ int _nrf91_gpioSet(u8 pin, u8 val)
 	}
 
 	return 0;
+}
+
+
+
+void _nrf91_nvicSystemReset(void)
+{
+	/* 5fa - Permit write to AIRCR fields., Priority grouping - 111 - No group priority, subpriority [7:0], */
+	/* System Reset Request - 1 - verified with amv8m doc */
+	*(nrf91_common.scb + scb_aircr) = ((0x5fa << 16) | (*(nrf91_common.scb + scb_aircr) & (0x700)) | (1 << 0x02));
+
+	__asm__ volatile ("dsb");
+
+	for(;;);
 }
 
 
