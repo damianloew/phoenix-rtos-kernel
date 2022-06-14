@@ -158,6 +158,16 @@ cryptocell = 64, gpio = 66 };
 
 
 // extern void _stm32_rccClearResetFlags(void);
+extern void _nrf91_nvicSystemReset(void);
+
+
+extern void _nrf91_timerClearEvent(void);
+
+
+extern int _nrf91_timerInit(u32 interval);
+
+
+extern unsigned int _nrf91_cpuid(void);
 
 
 extern int _nrf91_gpioConfig(u8 pin, u8 dir, u8 pull);

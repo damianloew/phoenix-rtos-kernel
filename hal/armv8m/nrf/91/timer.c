@@ -48,24 +48,25 @@ static struct {
 } timer_common;
 
 
-static u32 timer_getCnt(void)
-{
-	// u32 cnt[2];
+// static u32 timer_getCnt(void)
+// {
+// 	// u32 cnt[2];
 
-	// /* From documentation: "It should be noted that for a reliable LPTIM_CNT
-	//  * register read access, two consecutive read accesses must be performed and compared.
-	//  * A read access can be considered reliable when the
-	//  * values of the two consecutive read accesses are equal." */
+// 	// /* From documentation: "It should be noted that for a reliable LPTIM_CNT
+// 	//  * register read access, two consecutive read accesses must be performed and compared.
+// 	//  * A read access can be considered reliable when the
+// 	//  * values of the two consecutive read accesses are equal." */
 
-	// cnt[0] = *(timer_common.lptim + lptim_cnt);
+// 	// cnt[0] = *(timer_common.lptim + lptim_cnt);
 
-	// do {
-	// 	cnt[1] = cnt[0];
-	// 	cnt[0] = *(timer_common.lptim + lptim_cnt);
-	// } while (cnt[0] != cnt[1]);
+// 	// do {
+// 	// 	cnt[1] = cnt[0];
+// 	// 	cnt[0] = *(timer_common.lptim + lptim_cnt);
+// 	// } while (cnt[0] != cnt[1]);
 
-	// return cnt[0] & 0xffffu;
-}
+// 	// return cnt[0] & 0xffffu;
+// 	return 0;
+// }
 
 
 static int timer_irqHandler(unsigned int n, cpu_context_t *ctx, void *arg)
@@ -112,10 +113,10 @@ static time_t hal_timerCyc2Us(time_t ticks)
 }
 
 
-static time_t hal_timerUs2Cyc(time_t us)
-{
-	return ((32768 / (1 << PRESCALER)) * us + (500 * 1000)) / (1000 * 1000);
-}
+// static time_t hal_timerUs2Cyc(time_t us)
+// {
+// 	return ((32768 / (1 << PRESCALER)) * us + (500 * 1000)) / (1000 * 1000);
+// }
 
 
 static time_t hal_timerGetCyc(void)
@@ -138,6 +139,7 @@ static time_t hal_timerGetCyc(void)
 	// hal_spinlockClear(&timer_common.sp, &sc);
 
 	// return (upper << 16) + lower;
+	return 0;
 }
 
 /* Additional functions */

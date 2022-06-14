@@ -1269,9 +1269,6 @@ void _nrf91_timerClearEvent(void)
 
 int _nrf91_gpioConfig(u8 pin, u8 dir, u8 pull)
 {
-	volatile unsigned int *dirset = 0x50842518;
-	// u32 t;
-
 	if (pin > 31)
 		return -1;
 
