@@ -13,11 +13,12 @@
  * %LICENSE%
  */
 
-#ifndef _HAL_ARMV7M_SPINLOCK_H_
-#define _HAL_ARMV7M_SPINLOCK_H_
+#ifndef _HAL_ARMV8M_SPINLOCK_H_
+#define _HAL_ARMV8M_SPINLOCK_H_
 
 #include "types.h"
 
+/* same for cortex a - assuming it's ok */
 typedef struct _spinlock_t {
 	const char *name;
 	struct _spinlock_t *next;

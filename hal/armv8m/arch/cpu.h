@@ -5,8 +5,8 @@
  *
  * CPU related routines
  *
- * Copyright 2014, 2017 Phoenix Systems
- * Author: Jacek Popko, Pawel Pisarczyk, Aleksander Kaminski
+ * Copyright 2014, 2017, 2022 Phoenix Systems
+ * Author: Jacek Popko, Pawel Pisarczyk, Aleksander Kaminski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
@@ -23,8 +23,14 @@
 
 #include "types.h"
 
+/* based on armv7 doc I think it's size of memory block p76, for armv8m I think it should be verified by reading ERG register p1948*/
+/* ctr erg for nrf9160 is b0000 so it's also 512 words */
+/* endif to remind about checking it for new armv8 targets*/
+#if defined CPU_NRF91
 #define SIZE_PAGE 0x200
+#endif
 
+/*nrf9160 have similar amount of memory to stm so when it's ok for stm it will be also ok for nrf9160 */
 #ifndef SIZE_USTACK
 #define SIZE_USTACK (3 * SIZE_PAGE)
 #endif
@@ -33,6 +39,7 @@
 #define SIZE_KSTACK (4 * SIZE_PAGE)
 #endif
 
+/* p1518 in armv8?, p515 armv7 to TODO: ask for it! */
 #define RET_HANDLER_MSP 0xfffffff1
 #define RET_THREAD_MSP  0xfffffff9
 #define RET_THREAD_PSP  0xfffffffd
@@ -41,10 +48,10 @@
 
 #ifndef __ASSEMBLY__
 
-
+/* assuming it's in us, coz ia32 interval min sleep is 10ms */
 #define SYSTICK_INTERVAL 1000
 
-
+/* these defines are the same on armv7a so I assume it's ok */
 #define PUTONSTACK(kstack, t, v) \
 	do { \
 		(kstack) -= (sizeof(t) + 3) & ~0x3; \
@@ -59,7 +66,7 @@
 		ustack += (sizeof(t) + 3) & ~0x3; \
 	} while (0)
 
-
+/* TODO: ask for it */
 typedef struct _cpu_context_t {
 	u32 savesp;
 	u32 fpuctx;
@@ -76,25 +83,6 @@ typedef struct _cpu_context_t {
 	u32 r11;
 	u32 irq_ret;
 
-#ifdef CPU_IMXRT
-	u32 s16;
-	u32 s17;
-	u32 s18;
-	u32 s19;
-	u32 s20;
-	u32 s21;
-	u32 s22;
-	u32 s23;
-	u32 s24;
-	u32 s25;
-	u32 s26;
-	u32 s27;
-	u32 s28;
-	u32 s29;
-	u32 s30;
-	u32 s31;
-#endif
-
 	/* Saved by hardware */
 	u32 r0;
 	u32 r1;
@@ -105,26 +93,6 @@ typedef struct _cpu_context_t {
 	u32 pc;
 	u32 psr;
 
-#ifdef CPU_IMXRT
-	u32 s0;
-	u32 s1;
-	u32 s2;
-	u32 s3;
-	u32 s4;
-	u32 s5;
-	u32 s6;
-	u32 s7;
-	u32 s8;
-	u32 s9;
-	u32 s10;
-	u32 s11;
-	u32 s12;
-	u32 s13;
-	u32 s14;
-	u32 s15;
-	u32 fpscr;
-	u32 pad1;
-#endif
 } cpu_context_t;
 
 
@@ -134,12 +102,16 @@ static inline void hal_cpuDisableInterrupts(void)
 }
 
 
+/* for cortex a it's aif, I assume that it's ok */
+/* based on doc it's ~90% ok */
 static inline void hal_cpuEnableInterrupts(void)
 {
 	__asm__ volatile ("cpsie if");
 }
 
-
+/* TODO: ask */
+/* why was it only for non-imxrt?? - for imxrt isn't is used?*/
+/* it's called very often - so don't know why is it emoty */
 static inline void hal_cpuHalt(void)
 {
 #ifndef CPU_IMXRT117X
@@ -153,6 +125,7 @@ static inline void hal_cpuHalt(void)
 /* bit operations */
 
 
+/* same for cortex a, assuming it remains same */
 static inline unsigned int hal_cpuGetLastBit(unsigned long v)
 {
 	int pos;
@@ -163,6 +136,7 @@ static inline unsigned int hal_cpuGetLastBit(unsigned long v)
 }
 
 
+/* same as above */
 static inline unsigned int hal_cpuGetFirstBit(unsigned long v)
 {
 	unsigned pos;
@@ -177,12 +151,14 @@ static inline unsigned int hal_cpuGetFirstBit(unsigned long v)
 
 /* context management */
 
+/* not defined for cortex a - leaving like in armv7m, TODO: ask*/
 static inline void hal_cpuSetCtxGot(cpu_context_t *ctx, void *got)
 {
 	ctx->r9 = (u32)got;
 }
 
 
+/* not set for cortex a, we can put here some value and get it later (?) */
 static inline void hal_cpuSetGot(void *got)
 {
 	__asm__ volatile ("mov r9, %0" :: "r" (got));
@@ -199,6 +175,7 @@ static inline void *hal_cpuGetGot(void)
 }
 
 
+/* save stack pointer? do we switch here to next context? */
 static inline void hal_cpuRestore(cpu_context_t *curr, cpu_context_t *next)
 {
 	curr->savesp = (u32)next;
@@ -211,6 +188,7 @@ static inline void hal_cpuSetReturnValue(cpu_context_t *ctx, int retval)
 }
 
 
+/* assuming it's ok */
 static inline u32 hal_cpuGetPC(void)
 {
 	void *pc;
@@ -221,23 +199,26 @@ static inline u32 hal_cpuGetPC(void)
 }
 
 
+/* not implemented on armv7m so leaving like this */
 static inline void _hal_cpuSetKernelStack(void *kstack)
 {
 }
 
 
+/* same for other architectures - leaving */
 static inline void *hal_cpuGetSP(cpu_context_t *ctx)
 {
 	return (void *)ctx;
 }
 
 
+/*for cortex a it's sp, but here I think it's psp */
 static inline void *hal_cpuGetUserSP(cpu_context_t *ctx)
 {
 	return (void *)ctx->psp;
 }
 
-
+/* leaving rest as for armv7m: */
 static inline int hal_cpuSupervisorMode(cpu_context_t *ctx)
 {
 	return 0;

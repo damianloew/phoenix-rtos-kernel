@@ -19,6 +19,7 @@
 #include "../../../interrupts.h"
 #include "../../../spinlock.h"
 
+/* based on peripheral id table */
 #define TIMER0_IRQ timer0
 
 /*
@@ -41,7 +42,7 @@ enum { lptim_isr = 0, lptim_icr, lptim_ier, lptim_cfgr, lptim_cr, lptim_cmp, lpt
 static struct {
 	intr_handler_t overflowh;
 	spinlock_t sp;
-
+	volatile time_t time;
 	volatile u32 *lptim;
 	volatile time_t upper;
 	volatile int wakeup;
@@ -75,42 +76,41 @@ static int timer_irqHandler(unsigned int n, cpu_context_t *ctx, void *arg)
 	// (void)irq;
 	// (void)data;
 
-	_nrf91_timerClearEvent();
-	// timer_common.time += 1;
-	// hal_cpuDataSyncBarrier();
-	// return 0;
-
-
-
 	(void)n;
 	(void)ctx;
 	(void)arg;
 	int ret = 0;
 
-	if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
-		++timer_common.upper;
-		*(timer_common.lptim + lptim_icr) = 2;
-	}
+	_nrf91_timerClearEvent();
+	timer_common.time += 1;
+	/* *sync or data memory barier?? */
+	hal_cpuDataSyncBarrier();
+	// return 0;
 
-	if (*(timer_common.lptim + lptim_isr) & 1) {
-		*(timer_common.lptim + lptim_icr) = 1;
+	// if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
+	// 	++timer_common.upper;
+	// 	*(timer_common.lptim + lptim_icr) = 2;
+	// }
 
-		if (timer_common.wakeup != 0) {
-			ret = 1;
-			timer_common.wakeup = 0;
-		}
-	}
+	// if (*(timer_common.lptim + lptim_isr) & 1) {
+	// 	*(timer_common.lptim + lptim_icr) = 1;
 
-	hal_cpuDataMemoryBarrier();
+	// 	if (timer_common.wakeup != 0) {
+	// 		ret = 1;
+	// 		timer_common.wakeup = 0;
+	// 	}
+	// }
+
+	// hal_cpuDataMemoryBarrier();
 
 	return ret;
 }
 
 
-static time_t hal_timerCyc2Us(time_t ticks)
-{
-	return (ticks * 1000 * 1000) / (32768 / (1 << PRESCALER));
-}
+// static time_t hal_timerCyc2Us(time_t ticks)
+// {
+// 	return (ticks * 1000 * 1000) / (32768 / (1 << PRESCALER));
+// }
 
 
 // static time_t hal_timerUs2Cyc(time_t us)
@@ -119,28 +119,28 @@ static time_t hal_timerCyc2Us(time_t ticks)
 // }
 
 
-static time_t hal_timerGetCyc(void)
-{
-	// time_t upper;
-	// u32 lower;
-	// spinlock_ctx_t sc;
+// static time_t hal_timerGetCyc(void)
+// {
+// 	// time_t upper;
+// 	// u32 lower;
+// 	// spinlock_ctx_t sc;
 
-	// hal_spinlockSet(&timer_common.sp, &sc);
-	// upper = timer_common.upper;
-	// lower = timer_getCnt();
+// 	// hal_spinlockSet(&timer_common.sp, &sc);
+// 	// upper = timer_common.upper;
+// 	// lower = timer_getCnt();
 
-	// if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
-	// 	/* Check if we have unhandled overflow event.
-	// 	 * If so, upper is one less than it should be */
-	// 	if (timer_getCnt() >= lower) {
-	// 		++upper;
-	// 	}
-	// }
-	// hal_spinlockClear(&timer_common.sp, &sc);
+// 	// if (*(timer_common.lptim + lptim_isr) & (1 << 1)) {
+// 	// 	/* Check if we have unhandled overflow event.
+// 	// 	 * If so, upper is one less than it should be */
+// 	// 	if (timer_getCnt() >= lower) {
+// 	// 		++upper;
+// 	// 	}
+// 	// }
+// 	// hal_spinlockClear(&timer_common.sp, &sc);
 
-	// return (upper << 16) + lower;
-	return 0;
-}
+// 	// return (upper << 16) + lower;
+// 	return 0;
+// }
 
 /* Additional functions */
 
@@ -152,6 +152,8 @@ void timer_jiffiesAdd(time_t t)
 
 void timer_setAlarm(time_t us)
 {
+	// timer_common.wakeup = 1;
+
 	// u32 setval;
 	// spinlock_ctx_t sc;
 	// time_t ticks = hal_timerUs2Cyc(us);
@@ -185,26 +187,28 @@ void hal_timerSetWakeup(u32 when)
 
 time_t hal_timerGetUs(void)
 {
-	return hal_timerCyc2Us(hal_timerGetCyc());
+	return timer_common.time * 1000;
 }
 
 
 int hal_timerRegister(int (*f)(unsigned int, cpu_context_t *, void *), void *data, intr_handler_t *h)
 {
 	h->f = f;
-	h->n = SYSTICK_IRQ;
+	h->n = SYSTICK_IRQ; //was systick_irq!!
 	h->data = data;
 
 	return hal_interruptsSetHandler(h);
 }
 
 
+//for stm both systick and some timer are initialized here
+//interrupt is set for this timer,  for some overflow
 void _hal_timerInit(u32 interval)
 {
 	timer_common.upper = 0;
 	timer_common.wakeup = 0;
+	timer_common.time = 0;
 	//seems ok
-	hal_interruptsSetHandler(&timer_common.overflowh);
 	_nrf91_timerInit(interval);
 
 	// timer_common.lptim = (void *)0x40007c00;
@@ -226,11 +230,11 @@ void _hal_timerInit(u32 interval)
 
 	// *(timer_common.lptim + lptim_cr) |= 4;
 
-	// timer_common.overflowh.f = timer_irqHandler;
-	// timer_common.overflowh.n = lptim1_irq;
-	// timer_common.overflowh.got = NULL;
-	// timer_common.overflowh.data = NULL;
+	timer_common.overflowh.f = timer_irqHandler;
+	timer_common.overflowh.n = TIMER0_IRQ + 16; //irq should be +16 here
+	timer_common.overflowh.got = NULL;
+	timer_common.overflowh.data = NULL;
 	// hal_interruptsSetHandler(&timer_common.overflowh);
-
-	// _stm32_systickInit(interval);
+	hal_interruptsSetHandler(&timer_common.overflowh);
+	_nrf91_systickInit(interval);
 }

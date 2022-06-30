@@ -1,16 +1,19 @@
 
-#ifndef _HAL_ARMV7M_EXCEPTIONS_H_
-#define _HAL_ARMV7M_EXCEPTIONS_H_
+#ifndef _HAL_ARMV8M_EXCEPTIONS_H_
+#define _HAL_ARMV8M_EXCEPTIONS_H_
 
 #include "types.h"
 
 #define EXC_DEFAULT 128
 
+/* TODO: ask what is it */
 #define EXC_UNDEFINED 3
 
+/* assuming it's ok */
 #define SIZE_CTXDUMP 512 /* Size of dumped context */
 
 
+/* TODO: providing it were changed in cpu.h this should also be updated */
 typedef struct _exc_context_t {
 	/* Saved by ISR */
 	u32 psp;

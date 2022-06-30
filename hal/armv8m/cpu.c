@@ -32,6 +32,7 @@ volatile cpu_context_t *_cpu_nctx;
 /* performance */
 
 
+/* TODO: implement later */
 void hal_cpuLowPower(time_t us)
 {
 #ifdef CPU_STM32
@@ -50,10 +51,8 @@ void hal_cpuLowPower(time_t us)
 
 void hal_cpuGetCycles(cycles_t *cb)
 {
-#ifdef CPU_STM32
-	*cb = _stm32_systickGet();
-#elif defined(CPU_IMXRT)
-	*cb = _imxrt_systickGet();
+#ifdef CPU_NRF91
+	*cb = _nrf91_systickGet();
 #endif
 }
 

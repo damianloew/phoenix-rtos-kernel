@@ -112,9 +112,11 @@ int hal_interruptsSetHandler(intr_handler_t *h)
 	if (h == NULL || h->f == NULL || h->n >= SIZE_INTERRUPTS)
 		return -1;
 
+	/* what is going on with this got?? */
 	hal_spinlockSet(&interrupts.spinlock, &sc);
 	h->got = hal_cpuGetGot();
 
+	/* adding to interrupt handlers tree */
 	_intr_add(&interrupts.handlers[h->n], h);
 
 	if (h->n >= 0x10) {
@@ -166,12 +168,12 @@ __attribute__ ((section (".init"))) void _hal_interruptsInit(void)
 
 	hal_spinlockCreate(&interrupts.spinlock, "interrupts.spinlock");
 
-	// _stm32_scbSetPriority(SYSTICK_IRQ, 1);
-	// _stm32_scbSetPriority(PENDSV_IRQ, 1);
-	// _stm32_scbSetPriority(SVC_IRQ, 0);
+	_nrf91_scbSetPriority(SYSTICK_IRQ, 1);
+	_nrf91_scbSetPriority(PENDSV_IRQ, 1);
+	_nrf91_scbSetPriority(SVC_IRQ, 0);
 
 	// /* Set no subprorities in Interrupt Group Priority */
-	// _stm32_scbSetPriorityGrouping(3);
+	_nrf91_scbSetPriorityGrouping(3);
 
 	return;
 }

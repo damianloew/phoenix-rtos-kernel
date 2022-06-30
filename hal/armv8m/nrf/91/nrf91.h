@@ -40,9 +40,9 @@
 #define UART3_BASE ((void *)0x5000B000)
 
 #define UART0_IRQ uarte0
-#define UART1_IRQ uarte1
-#define UART2_IRQ uarte2
-#define UART3_IRQ uarte3
+#define UART1_IRQ uartee1
+#define UART2_IRQ uartee2
+#define UART3_IRQ uartee3
 
 /* default uart instance for nrf9160 dk, connected to VCOM0 */
 #define UART0_TX 29
@@ -277,16 +277,16 @@ extern int hal_platformctl(void *);
 // extern u32 _stm32_rtcGetms(void);
 
 
-// extern void _stm32_scbSetPriorityGrouping(u32 group);
+extern void _nrf91_scbSetPriorityGrouping(u32 group);
 
 
-// extern u32 _stm32_scbGetPriorityGrouping(void);
+extern u32 _nrf91_scbGetPriorityGrouping(void);
 
 
-// extern void _stm32_scbSetPriority(s8 excpn, u32 priority);
+extern void _nrf91_scbSetPriority(s8 excpn, u32 priority);
 
 
-// extern u32 _stm32_scbGetPriority(s8 excpn);
+extern u32 _nrf91_scbGetPriority(s8 excpn);
 
 
 // extern void _stm32_nvicSetIRQ(s8 irqn, u8 state);
@@ -331,13 +331,13 @@ extern int hal_platformctl(void *);
 // extern int _stm32_extiClearPending(u32 line);
 
 
-// extern int _stm32_systickInit(u32 interval);
+extern int _nrf91_systickInit(u32 interval);
 
 
-// extern void _stm32_systickSet(u8 state);
+extern void _nrf91_systickSet(u8 state);
 
 
-// extern u32 _stm32_systickGet(void);
+extern u32 _nrf91_systickGet(void);
 
 
 // extern void _stm32_mpuReadRegion(u8 region, mpur_t *reg);

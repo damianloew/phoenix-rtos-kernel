@@ -121,7 +121,8 @@ int main(void)
 	/* Start scheduling, leave current stack */
 	hal_cpuEnableInterrupts();
 	hal_cpuReschedule(NULL, NULL);
-	while(1) {;}
+
+	// while(1) {;}
 
 	return 0;
 }

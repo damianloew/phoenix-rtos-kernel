@@ -3,7 +3,7 @@
  *
  * Operating system kernel
  *
- * Configuration file for STM32
+ * Configuration file for nRF9160
  *
  * Copyright 2021 Phoenix Systems
  * Author: Hubert Buczynski
@@ -13,13 +13,13 @@
  * %LICENSE%
  */
 
+/* seems to be ok*/
 #ifndef _HAL_CONFIG_H_
 #define _HAL_CONFIG_H_
 
 
 #ifndef __ASSEMBLY__
 #include "nrf91.h"
-// #include "stm32-timer.h"
 #include "../../include/arch/syspage-nrf91.h"
 
 #define HAL_NAME_PLATFORM "NRF91 "

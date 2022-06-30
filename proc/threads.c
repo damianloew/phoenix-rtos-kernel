@@ -1113,7 +1113,7 @@ int proc_threadSleep(unsigned long long us)
 
 	_perf_enqueued(current);
 	_threads_updateWakeup(now, NULL);
-
+	//here it got stuck 
 	if ((err = hal_cpuReschedule(&threads_common.spinlock, &sc)) == -ETIME)
 		err = EOK;
 

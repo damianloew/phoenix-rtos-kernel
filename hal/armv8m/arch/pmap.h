@@ -3,22 +3,23 @@
  *
  * Operating system kernel
  *
- * pmap interface - machine dependent part of VM subsystem (ARMv7 with MPU)
+ * pmap interface - machine dependent part of VM subsystem (ARMv8 with MPU)
  *
- * Copyright 2017, 2020 Phoenix Systems
- * Author: Pawel Pisarczyk, Aleksander Kaminski, Hubert Buczynski
+ * Copyright 2017, 2020, 2022 Phoenix Systems
+ * Author: Pawel Pisarczyk, Aleksander Kaminski, Hubert Buczynski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
  * %LICENSE%
  */
 
-#ifndef _HAL_PMAP_ARMV7M_H_
-#define _HAL_PMAP_ARMV7M_H_
+#ifndef _HAL_PMAP_ARMV8M_H_
+#define _HAL_PMAP_ARMV8M_H_
 
 #include "types.h"
 
-/* Architecure dependent page attributes - used for mapping */
+/* TODO: have to verify this!!! ntot sure why is it different for cortex a*/
+/* Architecure dependent page attributes - used for mapping - leaving for now*/
 #define PGHD_PRESENT    0x01
 #define PGHD_USER       0x04
 #define PGHD_WRITE      0x02

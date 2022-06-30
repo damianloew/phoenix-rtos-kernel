@@ -226,7 +226,7 @@ _hal_invokePendSV:
 .size _hal_invokePendSV, .-_hal_invokePendSV
 .ltorg
 
-
+/* analyze this function! */
 .globl hal_cpuReschedule
 .type hal_cpuReschedule, %function
 hal_cpuReschedule:
@@ -250,7 +250,7 @@ spinlock:
 	ldr r2, [r2]
 	msr primask, r2
 hal_cpuReschedule0:
-	isb
+	isb    /* it got stuck when calling usleep here */
 	dmb
 	bx lr
 .size hal_cpuReschedule, .-hal_cpuReschedule

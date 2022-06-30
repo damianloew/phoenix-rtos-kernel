@@ -1,6 +1,7 @@
 
-#ifndef _HAL_ARMV7M_TYPES_H_
-#define _HAL_ARMV7M_TYPES_H_
+/* seems to be ok */
+#ifndef _HAL_ARMV8M_TYPES_H_
+#define _HAL_ARMV8M_TYPES_H_
 
 #define NULL 0
 
