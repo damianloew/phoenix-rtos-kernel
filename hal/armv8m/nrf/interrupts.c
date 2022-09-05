@@ -26,10 +26,11 @@
 // #endif
 
 // #ifdef CPU_STM32L4X6
+/* why 97??? */
 #define SIZE_INTERRUPTS     97
 // #endif
 
-
+/* why 4? */
 #define SIZE_HANDLERS       4
 
 

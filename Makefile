@@ -29,6 +29,7 @@ include ../phoenix-rtos-build/Makefile.$(TARGET_SUFF)
 
 CFLAGS += $(BOARD_CONFIG)
 CFLAGS += -I. -DVERSION=\"$(VERSION)\"
+CFLAGS += -Og -ggdb3
 
 EXTERNAL_HEADERS_DIR := ./include
 EXTERNAL_HEADERS := $(shell find $(EXTERNAL_HEADERS_DIR) -name \*.h)

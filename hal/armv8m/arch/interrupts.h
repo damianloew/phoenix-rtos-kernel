@@ -22,7 +22,7 @@
 //here add required irqs here
 #define SVC_IRQ     11
 #define PENDSV_IRQ  14
-//where is info about it in armv8 doc - those are excepction numbers ??
+//where is info about it in armv8 doc - those are excepction numbers ?? - yes it's the same as exception numbers
 #define SYSTICK_IRQ 15
 
 /* here is got, whih isn't present in cortex a handler */

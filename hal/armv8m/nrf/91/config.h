@@ -5,8 +5,8 @@
  *
  * Configuration file for nRF9160
  *
- * Copyright 2021 Phoenix Systems
- * Author: Hubert Buczynski
+ * Copyright 2021, 2022 Phoenix Systems
+ * Author: Hubert Buczynski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
