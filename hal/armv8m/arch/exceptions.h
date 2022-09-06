@@ -6,7 +6,7 @@
 
 #define EXC_DEFAULT 128
 
-/* TODO: ask what is it */
+/* TODO: ask what is it - I think the value does not matter */
 #define EXC_UNDEFINED 3
 
 /* assuming it's ok */

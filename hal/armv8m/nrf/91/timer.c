@@ -215,7 +215,7 @@ void _hal_timerInit(u32 interval)
 	// timer_common.upper = 0;
 	// timer_common.wakeup = 0;
 
-	// hal_spinlockCreate(&timer_common.sp, "timer");
+	hal_spinlockCreate(&timer_common.sp, "timer");
 
 	// *(timer_common.lptim + lptim_cfgr) = (PRESCALER << 9);
 	// *(timer_common.lptim + lptim_ier) = 3;

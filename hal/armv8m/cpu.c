@@ -245,9 +245,7 @@ void _hal_cpuInit(void)
 
 	hal_spinlockCreate(&cpu_common.busySp, "devBusy");
 
-#ifdef CPU_STM32
-	_stm32_platformInit();
-#elif defined(CPU_IMXRT)
-	_imxrt_platformInit();
+#ifdef CPU_NRF91
+	_nrf91_platformInit();
 #endif
 }

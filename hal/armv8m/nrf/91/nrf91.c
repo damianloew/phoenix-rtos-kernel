@@ -37,6 +37,8 @@ static struct {
 
 	u32 cpuclk;
 
+	spinlock_t pltctlSp;
+
 	// u32 resetFlags;
 } nrf91_common;
 
@@ -64,7 +66,7 @@ enum { syst_csr = 4, syst_rvr, syst_cvr, syst_calib };
 
 // /* platformctl syscall */
 
-//TODO: end cleaning 
+//TODO: end cleaning TODO: add platformctl implementation
 /* this isn't used for now */
 int hal_platformctl(void *ptr)
 {
@@ -111,6 +113,12 @@ int hal_platformctl(void *ptr)
 
 // 	return ret;
 	return 0;
+}
+
+
+void _nrf91_platformInit(void)
+{
+	hal_spinlockCreate(&nrf91_common.pltctlSp, "pltctl");
 }
 
 

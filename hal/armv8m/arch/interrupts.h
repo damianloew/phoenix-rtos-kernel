@@ -19,7 +19,7 @@
 
 #include "cpu.h"
 
-//here add required irqs here
+//add required irqs here
 #define SVC_IRQ     11
 #define PENDSV_IRQ  14
 //where is info about it in armv8 doc - those are excepction numbers ?? - yes it's the same as exception numbers
