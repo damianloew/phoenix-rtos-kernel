@@ -58,11 +58,7 @@ void _hal_consolePrint(const char *s)
 	do {
 		tx_dma_buff[cnt] = s[cnt];
 		cnt++;
-	} while (s[cnt-1] != '\0');
-
-	if (cnt > UART_TX_DMA_SIZE) {
-		cnt = UART_TX_DMA_SIZE;
-	}
+	} while ((s[cnt-1] != '\0') && (cnt < UART_TX_DMA_SIZE));
 
 	*(console_common.base + uarte_txd_ptr) = UART0_TX_DMA;
 	*(console_common.base + uarte_txd_maxcnt) = cnt;
