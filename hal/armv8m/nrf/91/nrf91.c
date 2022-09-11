@@ -26,7 +26,6 @@ static struct {
 	// volatile u32 *rcc;
 	volatile u32 *power;
 	volatile u32 *clock;
-	// volatile u32 *scb;
 	// volatile u32 *pwr;
 	volatile u32 *gpio;
 	volatile u32 *rtc[2];
@@ -64,54 +63,16 @@ enum { scb_actlr = 2, scb_cpuid = 832, scb_icsr, scb_vtor, scb_aircr, scb_scr, s
 
 enum { syst_csr = 4, syst_rvr, syst_cvr, syst_calib };
 
-// /* platformctl syscall */
 
-//TODO: end cleaning TODO: add platformctl implementation
-/* this isn't used for now */
+enum { fpu_cpacr = 34, fpu_fpccr = 141, fpu_fpcar, fpu_fpdscr };
+
+
+/* platformctl syscall */
+
+
+/* TODO: add platformctl implementation */
 int hal_platformctl(void *ptr)
 {
-// 	platformctl_t *data = ptr;
-// 	int ret = -EINVAL;
-// 	unsigned int state;
-// 	spinlock_ctx_t sc;
-
-// 	hal_spinlockSet(&stm32_common.pltctlSp, &sc);
-
-// 	switch (data->type) {
-// 	case pctl_devclk:
-// 		if (data->action == pctl_set) {
-// 			ret = _stm32_rccSetDevClock(data->devclk.dev, data->devclk.state);
-// 		}
-// 		else if (data->action == pctl_get) {
-// 			ret = _stm32_rccGetDevClock(data->devclk.dev, &state);
-// 			data->devclk.state = state;
-// 		}
-
-// 		break;
-// 	case pctl_cpuclk:
-// 		if (data->action == pctl_set) {
-// 			ret = _stm32_rccSetCPUClock(data->cpuclk.hz);
-// 			_stm32_systickInit(SYSTICK_INTERVAL);
-// 		}
-// 		else if (data->action == pctl_get) {
-// 			data->cpuclk.hz = _stm32_rccGetCPUClock();
-// 			ret = EOK;
-// 		}
-
-// 		break;
-// 	case pctl_reboot:
-// 		if (data->action == pctl_set) {
-// 			if (data->reboot.magic == PCTL_REBOOT_MAGIC)
-// 				_stm32_nvicSystemReset();
-// 		}
-// 		else if (data->action == pctl_get) {
-// 			data->reboot.reason = stm32_common.resetFlags;
-// 		}
-// 	}
-
-// 	hal_spinlockClear(&stm32_common.pltctlSp, &sc);
-
-// 	return ret;
 	return 0;
 }
 
@@ -125,6 +86,7 @@ void _nrf91_platformInit(void)
 /* RTC */
 
 
+/* TODO: remove it and alternatively place rtc driver in devices */
 int _nrf91_rtcInit(u32 interval)
 {
 	/* 1 tick per 1.007 ms - in theory, in fact it's much different */
@@ -389,10 +351,12 @@ void _nrf91_init(void)
 	nrf91_common.timer[1] = (void *)0x50010000;
 	nrf91_common.timer[2] = (void *)0x50011000;
 
+	/* Based on nRF9160 product specification there is fixed cpu frequency */
 	nrf91_common.cpuclk = 64 * 1000 * 1000;
 
-	/* Enable low power mode */
+	/* Enable low power mode - TODO: test how Phoenix-RTOS works in this mode */
 	// *(nrf91_common.power + power_tasks_lowpwr) = 1u;
+	/* Enable constant latency mode to disable automatic power management */
 	*(nrf91_common.power + power_tasks_constlat) = 1u;
 	hal_cpuDataMemoryBarrier();
 
@@ -401,12 +365,22 @@ void _nrf91_init(void)
 
 	/* Disable all clock interrupts */
 	*(nrf91_common.power + power_intenclr) = 0x3;
-	// while ( *(nrf91_common.power + power_inten) != 0u ) ; //TODO: check only required bits
+
+	/* Wait until the interrupts above will be cleared */
+	while ( *(nrf91_common.power + power_inten) | 0x98 != 0x98 )
+		;
 
 	*(nrf91_common.clock + clock_tasks_hfclkstart) = 1u;
-	/* Wait untill HXFO start and clear event flag */
+	/* Wait until HXFO start and clear event flag */
 	while ( *(nrf91_common.clock + clock_hfclkrun) != 1u )
 		;
 	*(nrf91_common.clock + clock_hfclkrun) = 0u;
 	hal_cpuDataMemoryBarrier();
+
+	/* Enable UsageFault, BusFault and MemManage exceptions */
+	*(nrf91_common.scb + scb_shcsr) |= (1 << 16) | (1 << 17) | (1 << 18);
+
+	/* Disable FPU */
+	*(nrf91_common.scb + fpu_cpacr) = 0;
+	*(nrf91_common.scb + fpu_fpccr) = 0;
 }
