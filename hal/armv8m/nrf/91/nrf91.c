@@ -123,7 +123,7 @@ void _nrf91_rtcClearEvent(void)
 
 /* TIMER */
 
-//interval does not matter!!!
+
 int _nrf91_timerInit(u32 interval)
 {
 	/* Set timer mode */
@@ -132,8 +132,8 @@ int _nrf91_timerInit(u32 interval)
 	*(nrf91_common.timer[0] + timer_bitmode) = 0u;
 	/* 1 tick per 1 us */
 	*(nrf91_common.timer[0] + timer_prescaler) = 4u;
-	/* 1 compare event per 1ms */
-	*(nrf91_common.timer[0] + timer_cc0) = 1000u;
+	/* 1 compare event per interval * 1us */
+	*(nrf91_common.timer[0] + timer_cc0) = interval;
 	/* Enable interrupts from compare0 events */
 	*(nrf91_common.timer[0] + rtc_intenset) = 0x10000;
 
