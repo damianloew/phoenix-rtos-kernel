@@ -23,34 +23,29 @@
 static struct {
 	volatile u32 *scb;
 	volatile u32 *nvic;
-	// volatile u32 *rcc;
 	volatile u32 *power;
 	volatile u32 *clock;
-	// volatile u32 *pwr;
 	volatile u32 *gpio;
 	volatile u32 *rtc[2];
 	volatile u32 *timer[3];
-	// volatile u32 *syscfg;
-	// volatile u32 *iwdg;
-	// volatile u32 *flash;
-
 	u32 cpuclk;
-
 	spinlock_t pltctlSp;
-
-	// u32 resetFlags;
 } nrf91_common;
 
 
 enum { power_tasks_constlat = 30, power_tasks_lowpwr, power_inten = 192, power_intenset, power_intenclr, power_status = 272};
 
+
 enum { clock_tasks_hfclkstart, clock_inten = 192, clock_intenset, clock_intenclr, clock_hfclkrun = 258, clock_hfclkstat };
 
+
 enum { gpio_out = 1, gpio_outset, gpio_outclr, gpio_in, gpio_dir, gpio_dirsetout, gpio_dirsetin, gpio_cnf = 128 };
+
 
 enum { rtc_tasks_start = 0, rtc_tasks_stop, rtc_tasks_clear, rtc_events_tick = 64, 
 	rtc_events_compare0 = 80, rtc_events_compare1, rtc_events_compare2, rtc_events_compare3, rtc_intenset = 193, rtc_intenclr,
 	rtc_evten = 208, rtc_evtenset, rtc_evtenclr, rtc_prescaler = 322, rtc_cc0 = 336, rtc_cc1, rtc_cc2, rtc_cc3};
+
 
 enum { timer_tasks_start = 0, timer_tasks_stop, timer_tasks_count, timer_tasks_clear, timer_tasks_shutdown,
 	timer_tasks_capture0 = 16, timer_tasks_capture1, timer_tasks_capture2, timer_tasks_capture3, timer_tasks_capture4, timer_tasks_capture5,
@@ -58,8 +53,10 @@ enum { timer_tasks_start = 0, timer_tasks_stop, timer_tasks_count, timer_tasks_c
 	timer_intenset = 193, timer_intenclr, timer_mode = 321, timer_bitmode, timer_prescaler = 324,
 	timer_cc0 = 336, timer_cc1, timer_cc2, timer_cc3, timer_cc4, timer_cc5 };
 
+
 enum { scb_actlr = 2, scb_cpuid = 832, scb_icsr, scb_vtor, scb_aircr, scb_scr, scb_ccr, scb_shp1, scb_shp2,
 	scb_shp3, scb_shcsr, scb_cfsr, scb_mmsr, scb_bfsr, scb_ufsr, scb_hfsr, scb_mmar, scb_bfar, scb_afsr };
+
 
 enum { syst_csr = 4, syst_rvr, syst_cvr, syst_calib };
 
@@ -83,6 +80,7 @@ void _nrf91_platformInit(void)
 }
 
 
+//********************TO REMOVE**********************************
 /* RTC */
 
 
@@ -119,6 +117,7 @@ void _nrf91_rtcClearEvent(void)
 	/* Clear counter */
 	*(nrf91_common.rtc[0] + rtc_tasks_clear) = 1u;
 }
+//********************TO REMOVE**********************************
 
 
 /* TIMER */
@@ -179,21 +178,6 @@ int _nrf91_systickInit(u32 interval)
 }
 
 
-u32 _nrf91_systickGet(void)
-{
-	u32 cb;
-
-	cb = ((*(nrf91_common.scb + syst_rvr) - *(nrf91_common.scb + syst_cvr)) * 1000) / *(nrf91_common.scb + syst_rvr);
-
-	//scb icsr is ok
-	/* Add 1000 us if there's systick pending */
-	if (*(nrf91_common.scb + scb_icsr) & (1 << 26))
-		cb += 1000;
-
-	return cb;
-}
-
-
 /* GPIO */
 
 
@@ -213,7 +197,7 @@ int _nrf91_gpioConfig(u8 pin, u8 dir, u8 pull)
 		*(nrf91_common.gpio + gpio_cnf + pin) &= ~0x2;
 	}
 	
-	if (pull) { //led isn't working after that
+	if (pull) {
 		*(nrf91_common.gpio + gpio_cnf + pin) = (pull << 2);
 	}
 

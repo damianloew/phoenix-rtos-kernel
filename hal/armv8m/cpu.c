@@ -51,9 +51,10 @@ void hal_cpuLowPower(time_t us)
 
 void hal_cpuGetCycles(cycles_t *cb)
 {
-#ifdef CPU_NRF91
-	*cb = _nrf91_systickGet();
-#endif
+	/* Cycle counter is not available on armv8m
+	assumption that 1 cycle is 1us, so we use hal_timerGetUs() with 1ms resolution
+	both cycles_t and time_t have the same size on armv8m */
+	*cb = hal_timerGetUs();
 }
 
 
