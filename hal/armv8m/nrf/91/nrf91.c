@@ -226,18 +226,16 @@ int _nrf91_gpioSet(u8 pin, u8 val)
 /* SCB */
 
 
-//to verify
 void _nrf91_scbSetPriorityGrouping(u32 group)
 {
 	u32 t;
 
-	/*some differences here */
 	/* Get register value and clear bits to set */
-	//address was the same
 	t = *(nrf91_common.scb + scb_aircr) & ~0xffff0700;
 
-	//verified that it's the same
-	/* Store new value */
+	/* Set AIRCR.PRIGROUP to 3: 16 priority groups and 16 subgroups
+	/* The value is same as for armv7m4-stm32l4x6 target
+	/* Setting various priorities is not supported on Phoenix-RTOS, so it's just default value */
 	*(nrf91_common.scb + scb_aircr) = t | 0x5fa0000 | ((group & 7) << 8);
 }
 
@@ -248,21 +246,17 @@ u32 _nrf91_scbGetPriorityGrouping(void)
 }
 
 
-/* no differences between armv7m and armv8m*/
 void _nrf91_scbSetPriority(s8 excpn, u32 priority)
 {
 	volatile u8 *ptr;
-	// shpr in doc, 0xE000ED18 address
-	/*it makes sense - 4 handler in 32bit register */
+
 	ptr = &((u8*)(nrf91_common.scb + scb_shp1))[excpn - 4];
 
-	//but here why << 4?? don't know - but I think I will leave it
-	// maybe the lower priority we want to set is 16
+	/* We set only group priority field */
 	*ptr = (priority << 4) & 0xff;
 }
 
 
-/* not used, but good to have, there are also no differences */
 u32 _nrf91_scbGetPriority(s8 excpn)
 {
 	volatile u8 *ptr;
