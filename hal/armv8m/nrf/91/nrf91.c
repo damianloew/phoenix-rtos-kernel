@@ -270,25 +270,8 @@ u32 _nrf91_scbGetPriority(s8 excpn)
 /* NVIC */
 
 
-void _nrf91_nvicSystemReset(void)
-{
-	/* 5fa - Permit write to AIRCR fields., Priority grouping - 111 - No group priority, subpriority [7:0], */
-	/* System Reset Request - 1 - verified with amv8m doc */
-	*(nrf91_common.scb + scb_aircr) = ((0x5fa << 16) | (*(nrf91_common.scb + scb_aircr) & (0x700)) | (1 << 0x02));
-
-	__asm__ volatile ("dsb");
-
-	for(;;);
-}
-
-
 void _nrf91_nvicSetIRQ(s8 irqn, u8 state)
 {
-	// volatile u32 *ptr = nrf91_common.nvic + ((u8)irqn >> 5) + (state ? nvic_iser : nvic_icer);
-	// *ptr = 1 << (irqn & 0x1F);
-
-	// hal_cpuDataSyncBarrier();
-	// hal_cpuInstrBarrier();
 	volatile u32 *ptr = nrf91_common.nvic + ((u8)irqn >> 5) + (state ? nvic_iser : nvic_icer);
 	*ptr = 1 << (irqn & 0x1F);
 
@@ -303,7 +286,18 @@ void _nrf91_nvicSetPriority(s8 irqn, u32 priority)
 
 	ptr = ((u32 *)(nrf91_common.nvic + nvic_ip)) + (irqn / 4);
 
-	*ptr = (priority << (8 * (irqn % 4)));
+	/* We set only group priority field */
+	*ptr = (priority << (8 * (irqn % 4) + 4));
+}
+
+
+void _nrf91_nvicSystemReset(void)
+{
+	*(nrf91_common.scb + scb_aircr) = ((0x5fa << 16) | (*(nrf91_common.scb + scb_aircr) & (0x700)) | (1 << 0x02));
+
+	__asm__ volatile ("dsb");
+
+	for(;;);
 }
 
 
