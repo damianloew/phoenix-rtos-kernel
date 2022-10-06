@@ -317,8 +317,10 @@ void _nrf91_init(void)
 	nrf91_common.power = (void *)0x50005000;
 	nrf91_common.clock = (void *)0x50005000;
 	nrf91_common.gpio = (void *)0x50842500;
+	/* TODO: remove it and alternatively place rtc driver in devices */
 	nrf91_common.rtc[0] = (void *)0x50014000;
 	nrf91_common.rtc[1] = (void *)0x50015000;
+	/* */
 	nrf91_common.timer[0] = (void *)0x5000F000;
 	nrf91_common.timer[1] = (void *)0x50010000;
 	nrf91_common.timer[2] = (void *)0x50011000;
