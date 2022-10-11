@@ -5,8 +5,8 @@
  *
  * Interrupt handling
  *
- * Copyright 2017, 2020 Phoenix Systems
- * Author: Pawel Pisarczyk, Hubert Buczynski
+ * Copyright 2017, 2020, 2022 Phoenix Systems
+ * Author: Pawel Pisarczyk, Hubert Buczynski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
@@ -21,16 +21,12 @@
 #include "../../../proc/userintr.h"
 
 
-// #if defined(CPU_STM32L152XD) || defined(CPU_STM32L152XE)
-// #define SIZE_INTERRUPTS     84
-// #endif
-
-// #ifdef CPU_STM32L4X6
-/* why 97??? */
+/* Value based on CPU_STM32L4X6, TODO: verify the corectness */
+#ifdef CPU_NRF91
 #define SIZE_INTERRUPTS     97
-// #endif
+#endif
 
-/* why 4? */
+/* Value based on other target architectures */
 #define SIZE_HANDLERS       4
 
 
@@ -173,7 +169,7 @@ __attribute__ ((section (".init"))) void _hal_interruptsInit(void)
 	_nrf91_scbSetPriority(PENDSV_IRQ, 1);
 	_nrf91_scbSetPriority(SVC_IRQ, 0);
 
-	// /* Set no subprorities in Interrupt Group Priority */
+	/* Set no subprorities in Interrupt Group Priority */
 	_nrf91_scbSetPriorityGrouping(3);
 
 	return;
