@@ -163,15 +163,8 @@ void _hal_consoleInit(void)
 	*(console_common.base + uarte_psel_rts) = console_common.rtsPin;
 	*(console_common.base + uarte_psel_cts) = console_common.ctsPin;
 
-
-	switch (UART_BAUDRATE) {
-		case 9600:
-			*(console_common.base + uarte_baudrate) = baud_9600;
-			break;
-		case 115200:
-		default:
-			*(console_common.base + uarte_baudrate) = baud_115200;
-	}
+	/* currently supported baud rates: 9600, 115200 */
+	*(console_common.base + uarte_baudrate) = baud_115200;
 
 	/* Default settings - hardware flow control disabled, exclude parity bit, one stop bit */
 	*(console_common.base + uarte_config) = 0u;

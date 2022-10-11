@@ -16,8 +16,6 @@
 #ifndef _PHOENIX_ARCH_NRF9160_H_
 #define _PHOENIX_ARCH_NRF9160_H_
 
-/* currently supported baud rates: 9600, 115200 */
-#define UART_BAUDRATE 115200
 
 #define FLASH_PROGRAM_1_ADDR    0x00000000
 #define FLASH_PROGRAM_BANK_SIZE (1024 * 1024)
