@@ -17,16 +17,10 @@
 #define _PHOENIX_ARCH_NRF9160_H_
 
 
-#define FLASH_PROGRAM_1_ADDR    0x00000000
-#define FLASH_PROGRAM_BANK_SIZE (1024 * 1024)
-
-
 enum { input = 0, output };
 enum { low = 0, high };
 enum { nopull = 0, pulldown, pullup = 3};
 
-enum { nvic_iser = 0, nvic_icer = 32, nvic_ispr = 64, nvic_icpr = 96, nvic_iabr = 128,
-	nvic_ip = 192 };
 
 /* nRF9160 peripheral id's - same as irq numbers */
 enum { spu = 3, regulators, clock = 5, power = 5, ctrlapperi, spi0 = 8, twi0 = 8, uarte0 = 8,

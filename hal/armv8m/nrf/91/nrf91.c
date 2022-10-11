@@ -64,6 +64,10 @@ enum { syst_csr = 4, syst_rvr, syst_cvr, syst_calib };
 enum { fpu_cpacr = 34, fpu_fpccr = 141, fpu_fpcar, fpu_fpdscr };
 
 
+enum { nvic_iser = 0, nvic_icer = 32, nvic_ispr = 64, nvic_icpr = 96, nvic_iabr = 128,
+	nvic_ip = 192 };
+
+
 /* platformctl syscall */
 
 
