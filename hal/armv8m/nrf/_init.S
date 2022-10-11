@@ -3,10 +3,10 @@
  *
  * Operating system kernel
  *
- * Low-level initialization for Cortex-M3/M4 (ARMv7) architecture
+ * Low-level initialization for Cortex-M33 (ARMv8) architecture
  *
- * Copyright 2012, 2016-2017 Phoenix Systems
- * Author: Jacek Popko, Pawel Pisarczyk, Jakub Sejdak, Aleksander Kaminski
+ * Copyright 2012, 2016-2017, 2022 Phoenix Systems
+ * Author: Jacek Popko, Pawel Pisarczyk, Jakub Sejdak, Aleksander Kaminski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
