@@ -238,8 +238,8 @@ void _nrf91_scbSetPriorityGrouping(u32 group)
 	t = *(nrf91_common.scb + scb_aircr) & ~0xffff0700;
 
 	/* Set AIRCR.PRIGROUP to 3: 16 priority groups and 16 subgroups
-	/* The value is same as for armv7m4-stm32l4x6 target
-	/* Setting various priorities is not supported on Phoenix-RTOS, so it's just default value */
+	   The value is same as for armv7m4-stm32l4x6 target
+	   Setting various priorities is not supported on Phoenix-RTOS, so it's just default value */
 	*(nrf91_common.scb + scb_aircr) = t | 0x5fa0000 | ((group & 7) << 8);
 }
 
@@ -345,7 +345,7 @@ void _nrf91_init(void)
 	*(nrf91_common.power + power_intenclr) = 0x3;
 
 	/* Wait until the interrupts above will be cleared */
-	while ( *(nrf91_common.power + power_inten) | 0x98 != 0x98 )
+	while ( (*(nrf91_common.power + power_inten) | 0x98) != 0x98 )
 		;
 
 	*(nrf91_common.clock + clock_tasks_hfclkstart) = 1u;

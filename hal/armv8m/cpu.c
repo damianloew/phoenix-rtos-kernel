@@ -17,6 +17,7 @@
 #include "../interrupts.h"
 #include "../spinlock.h"
 #include "../string.h"
+#include "../timer.h"
 
 #include "config.h"
 

@@ -22,40 +22,31 @@
 #include "../../../include/arch/nrf9160.h"
 
 
-extern void _nrf91_nvicSystemReset(void);
+extern void _nrf91_platformInit(void);
 
 
-extern void _nrf91_timerClearEvent(void);
+extern int hal_platformctl(void *);
+
+
+extern void _nrf91_platformInit(void);
 
 
 extern int _nrf91_timerInit(u32 interval);
 
 
-extern unsigned int _nrf91_cpuid(void);
+extern void _nrf91_timerDone(void);
+
+
+extern void _nrf91_timerClearEvent(void);
+
+
+extern int _nrf91_systickInit(u32 interval);
 
 
 extern int _nrf91_gpioConfig(u8 pin, u8 dir, u8 pull);
 
 
 extern int _nrf91_gpioSet(u8 pin, u8 val);
-
-
-extern int _nrf91_rtcInit(u32 interval);
-
-
-extern void _nrf91_rtcDone(void);
-
-
-extern void _nrf91_rtcClear(void);
-
-
-extern void _nrf91_nvicSetIRQ(s8 irqn, u8 state);
-
-
-extern void _nrf91_nvicSetPriority(s8 irqn, u32 priority);
-
-
-extern int hal_platformctl(void *);
 
 
 extern void _nrf91_scbSetPriorityGrouping(u32 group);
@@ -70,13 +61,16 @@ extern void _nrf91_scbSetPriority(s8 excpn, u32 priority);
 extern u32 _nrf91_scbGetPriority(s8 excpn);
 
 
-extern int _nrf91_systickInit(u32 interval);
+extern void _nrf91_nvicSetIRQ(s8 irqn, u8 state);
 
 
-extern void _nrf91_systickSet(u8 state);
+extern void _nrf91_nvicSetPriority(s8 irqn, u32 priority);
 
 
-extern u32 _nrf91_systickGet(void);
+extern void _nrf91_nvicSystemReset(void);
+
+
+extern unsigned int _nrf91_cpuid(void);
 
 
 #endif

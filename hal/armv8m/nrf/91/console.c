@@ -26,8 +26,8 @@ static struct {
 	u8 rxPin;
 	u8 rtsPin;
 	u8 ctsPin;
-	volatile u32 *txDma;
-	volatile u32 *rxDma;
+	u32 txDma;
+	u32 rxDma;
 	u32 txDmaSize;
 	u32 rxDmaSize;
 } console_common;
@@ -129,15 +129,15 @@ void _hal_consoleInit(void)
 		u8 rxPin;
 		u8 rtsPin;
 		u8 ctsPin;
-		volatile u32 *txDma;
-		volatile u32 *rxDma;
+		u32 txDma;
+		u32 rxDma;
 		u32 txDmaSize;
 		u32 rxDmaSize;
 	} uarts[] = {
-		{0, 0x50008000, 29, 28, 27, 26, 0x2003C000, 0x2003E000, 8191},
-		{1, 0x50009000, 1, 0, 14, 15, 0x20038000, 0x2003A000, 8191},
-		{2, 0x5000A000, 29, 28, 27, 26, 0x2003C000, 0x2003E000, 8191},
-		{3, 0x5000B000, 1, 0, 14, 15, 0x20038000, 0x2003A000, 8191}
+		{0, (u32 *)0x50008000, 29, 28, 27, 26, 0x2003C000, 0x2003E000, 8191},
+		{1, (u32 *)0x50009000, 1, 0, 14, 15, 0x20038000, 0x2003A000, 8191},
+		{2, (u32 *)0x5000A000, 29, 28, 27, 26, 0x2003C000, 0x2003E000, 8191},
+		{3, (u32 *)0x5000B000, 1, 0, 14, 15, 0x20038000, 0x2003A000, 8191}
 	};
 
 	const int uart = 0;
