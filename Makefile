@@ -13,16 +13,16 @@ KERNEL=1
 SIL ?= @
 MAKEFLAGS += --no-print-directory
 
-#TARGET ?= armv7m3-stm32l152xd
-#TARGET ?= armv7m3-stm32l152xe
-#TARGET ?= armv7m4-stm32l4x6
-#TARGET ?= armv7m7-imxrt105x
-#TARGET ?= armv7m7-imxrt106x
-#TARGET ?= armv7m7-imxrt117x
-#TARGET ?= armv7a7-imx6ull
+TARGET ?= armv7m3-stm32l152xd
+TARGET ?= armv7m3-stm32l152xe
+TARGET ?= armv7m4-stm32l4x6
+TARGET ?= armv7m7-imxrt105x
+TARGET ?= armv7m7-imxrt106x
+TARGET ?= armv7m7-imxrt117x
+TARGET ?= armv7a7-imx6ull
 TARGET ?= ia32-generic
 TARGET ?= armv8m33-nrf9160
-#TARGET ?= riscv64-spike
+TARGET ?= riscv64-spike
 
 include ../phoenix-rtos-build/Makefile.common
 include ../phoenix-rtos-build/Makefile.$(TARGET_SUFF)
@@ -44,9 +44,6 @@ OBJS = $(addprefix $(PREFIX_O), main.o syscalls.o syspage.o)
 
 all: $(PREFIX_PROG_STRIPPED)phoenix-$(TARGET_FAMILY)-$(TARGET_SUBFAMILY).elf
 
-# warning('-----')
-$(info ************  TEST VERSION ************ $(TARGET_SUFF))
-# warning($(TARGET_SUFF))
 include hal/$(TARGET_SUFF)/Makefile
 include vm/Makefile
 include proc/Makefile

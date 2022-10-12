@@ -10,5 +10,4 @@ ifneq (, $(findstring nrf, $(TARGET_SUBFAMILY)))
     CFLAGS += -Ihal/armv8m/nrf -Ihal/armv8m
 endif
 
-$(info _________________)
 OBJS += $(addprefix $(PREFIX_O)hal/armv8m/, string.o spinlock.o cpu.o hal.o pmap.o exceptions.o)
