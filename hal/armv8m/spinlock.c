@@ -13,8 +13,6 @@
  * %LICENSE%
  */
 
-/* copy from armv7m */
-
 #include "../spinlock.h"
 
 struct {

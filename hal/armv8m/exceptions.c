@@ -5,8 +5,8 @@
  *
  * Exception handling
  *
- * Copyright 2017 Phoenix Systems
- * Author: Pawel Pisarczyk, Jakub Sejdak
+ * Copyright 2017, 2022 Phoenix Systems
+ * Author: Pawel Pisarczyk, Jakub Sejdak, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *

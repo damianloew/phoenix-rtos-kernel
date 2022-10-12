@@ -3,7 +3,7 @@
  *
  * Operating system kernel
  *
- * pmap - machine dependent part of VM subsystem (ARMv7 with MPU)
+ * pmap - machine dependent part of VM subsystem (ARMv8 with MPU)
  *
  * Copyright 2017, 2020-2021 Phoenix Systems
  * Author: Pawel Pisarczyk, Aleksander Kaminski, Hubert Buczynski

@@ -3,7 +3,7 @@
  *
  * Operating system kernel
  *
- * Hardware Abstraction Layer (ARMv7 Cortex-M3)
+ * Hardware Abstraction Layer (ARMv8M)
  *
  * Copyright 2016-2017 Phoenix Systems
  * Author: Pawel Pisarczyk, Artur Wodejko
