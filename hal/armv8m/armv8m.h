@@ -3,10 +3,10 @@
  *
  * Operating system kernel
  *
- * ARMv7 Cortex-M related routines
+ * ARMv8 Cortex-M related routines
  *
- * Copyright 2021 Phoenix Systems
- * Author: Hubert Buczynski
+ * Copyright 2021, 2022 Phoenix Systems
+ * Author: Hubert Buczynski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *

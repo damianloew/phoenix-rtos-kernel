@@ -5,8 +5,8 @@
  *
  * CPU related routines
  *
- * Copyright 2014, 2017 Phoenix Systems
- * Author: Jacek Popko, Pawel Pisarczyk, Aleksander Kaminski
+ * Copyright 2014, 2017, 2022 Phoenix Systems
+ * Author: Jacek Popko, Pawel Pisarczyk, Aleksander Kaminski, Damian Loewnau
  *
  * This file is part of Phoenix-RTOS.
  *
@@ -32,20 +32,9 @@ volatile cpu_context_t *_cpu_nctx;
 /* performance */
 
 
-/* TODO: implement later */
+/* TODO: add implementation */
 void hal_cpuLowPower(time_t us)
 {
-#ifdef CPU_STM32
-	spinlock_ctx_t scp;
-
-	hal_spinlockSet(&cpu_common.busySp, &scp);
-	if (cpu_common.busy == 0) {
-		/* Don't increment jiffies if sleep was unsuccessful */
-		us = _stm32_pwrEnterLPStop(us);
-		timer_jiffiesAdd(us);
-	}
-	hal_spinlockClear(&cpu_common.busySp, &scp);
-#endif
 }
 
 
@@ -113,10 +102,6 @@ int hal_cpuCreateContext(cpu_context_t **nctx, void *start, void *kstack, size_t
 		((u32 *)ctx->psp)[5] = 0xeeeeeeee; /* lr */
 		((u32 *)ctx->psp)[6] = (u32)start; /* pc */
 		((u32 *)ctx->psp)[7] = 0x01000000; /* psr */
-#ifdef CPU_IMXRT
-		ctx->fpuctx = ctx->psp + 8 * sizeof(int);
-		((u32 *)ctx->psp)[24] = 0;         /* fpscr */
-#endif
 		ctx->irq_ret = RET_THREAD_PSP;
 	}
 	else {
@@ -129,9 +114,6 @@ int hal_cpuCreateContext(cpu_context_t **nctx, void *start, void *kstack, size_t
 		ctx->pc = (u32)start;
 		ctx->psr = 0x01000000;
 		ctx->fpuctx = (u32)(&ctx->psr + 1);
-#ifdef CPU_IMXRT
-		ctx->fpscr = 0;
-#endif
 		ctx->irq_ret = RET_THREAD_MSP;
 	}
 
@@ -198,12 +180,7 @@ char *hal_cpuInfo(char *info)
 char *hal_cpuFeatures(char *features, unsigned int len)
 {
 	unsigned int n = 0;
-#ifdef CPU_IMXRT
-	if ((len - n) > 5) {
-		hal_strcpy(features + n, "FPU, ");
-		n += 5;
-	}
-#elif defined(CPU_STM32)
+#ifdef CPU_NRF91
 	if ((len - n) > 8) {
 		hal_strcpy(features + n, "softfp, ");
 		n += 8;
@@ -229,13 +206,9 @@ char *hal_cpuFeatures(char *features, unsigned int len)
 }
 
 
+/* TODO: add Watchdog implementation */
 void hal_wdgReload(void)
 {
-// #ifdef CPU_STM32
-// 	_stm32_wdgReload();
-// #elif defined(CPU_IMXRT)
-// 	_imxrt_wdgReload();
-// #endif
 }
 
 
